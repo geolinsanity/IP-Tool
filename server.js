@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-// const bodyParser = require('body-parser');
+const Auth = require('./src/controllers/auth.controller');
 const db = require('./src/models');
 const app = express();
 
@@ -41,8 +41,10 @@ async function initial() {
             console.log('Added default roles to DB');
         }
         if(countUser === 0) {
+            const pass = 'adminpass';
+            const encryptPass = await Auth.hashPass(pass);
             await db.user.insertOne(
-                { username: 'admin', password: 'adminpass', role_id: 3 },
+                { username: 'admin', password: encryptPass, role_id: 3 },
             );
             console.log('Added default admin to DB');
         }
@@ -59,6 +61,8 @@ app.get('/', (req, res) => {
 
 //Routes
 app.use('/user', require('./src/routes/user.route'));
+app.use('/', require('./src/routes/main.route'));
+app.use('/audit', require('./src/routes/audit.route'));
 
 //For Errors
 app.use((err, req, res, next) => {
