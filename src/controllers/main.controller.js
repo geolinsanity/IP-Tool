@@ -3,10 +3,32 @@ const { audit } = require('../controllers/audit.controller');
 
 exports.getIP = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const totalRecords = await Main.countDocuments();
         const getIPs = await Main.find()
-        return res.json(getIPs);
+            .limit(limit)
+            .skip(skip)
+            .sort({ createdAt: -1 });
+
+        const totalPages = Math.ceil(totalRecords / limit);
+
+        return res.json({
+            data: getIPs,
+            pagination: {
+                currentPage: page,
+                limit,
+                totalRecords,
+                totalPages,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
+        });
     } catch (err) {
-        console.error(err)
+        console.error('Error retrieving IPs:', err);
+        return res.status(500).json({ message: 'Error retrieving IPs', error: err.message });
     }
 }
 
@@ -24,10 +46,10 @@ exports.addIP = async(req, res) => {
         //Audit log
         audit(req, res, 'Created', `Added new IP ${ip}`, newRecord._id.toString(), null, newRecord);
 
-        return res.status(201).json('New IP added');
+        return res.status(201).json({ message: 'New record added', data: newRecord });
     } catch (err) {
-        console.error(err)
-        return res.status(500).json(err.message)
+        console.error('Error adding IP:', err);
+        return res.status(500).json({ message: 'Error adding IP', error: err.message });
     }
 }
 
@@ -39,11 +61,11 @@ exports.editIP = async(req, res) => {
         
         const getRecord = await Main.findById(id);
         if(!getRecord) {
-            return res.status(404).json('IP not found');
+            return res.status(404).json({ message: 'IP not found' });
         }
 
         if(!isAdmin && getRecord.createdBy.toString() !== req.user.userID) {
-            return res.status(403).json('You are not allowed to edit this IP')
+            return res.status(403).json({ message: 'You are not allowed to edit this IP' })
         }
 
         const newRecord = await Main.findByIdAndUpdate(
@@ -60,11 +82,11 @@ exports.editIP = async(req, res) => {
         // Audit log 
         audit(req, res, 'Updated', `Modified IP ${ip}`, id, getRecord, newRecord);
 
-        return res.status(200).json('IP has been updated');
+        return res.status(200).json({ message: 'IP has been updated' });
 
     } catch (err) {
-        console.error(err)
-        return res.status(500).json(err.message)
+        console.error('Error updating IP:', err);
+        return res.status(500).json({ message: 'Error updating IP', error: err.message });
     }
 }
 
@@ -74,15 +96,15 @@ exports.deleteIP = async(req, res) => {
         const deleteRecord = await Main.findByIdAndDelete(id);
 
         if(!deleteRecord) {
-            return res.status(404).json('IP record not found');
+            return res.status(404).json({ message: 'IP record not found' });
         }
 
         // Audit log
         audit(req, res, 'Deleted', 'IP removed', id, deleteRecord);
 
-        return res.status(200).json('Record successfully deleted')
+        return res.status(200).json({ message: 'Record successfully deleted' });
     } catch (err) {
-        console.error(err)
-        return res.status(500).json(err.message)
+        console.error('Error deleting IP:', err);
+        return res.status(500).json({ message: 'Error deleting IP', error: err.message });
     }
 }

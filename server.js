@@ -2,14 +2,17 @@ const express = require('express');
 const cors = require('cors');
 const Auth = require('./src/controllers/auth.controller');
 const db = require('./src/models');
+const cookieParser = require('cookie-parser');
 const app = express();
 
 const corsOptions = {
-    origin:'http://localhost:3001'
+    origin:'http://localhost:4200',
+    credentials: true
 };
 
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
 
@@ -49,7 +52,8 @@ async function initial() {
             console.log('Added default admin to DB');
         }
     } catch (err) {
-        console.error('Error initialize roles:', err);
+        console.error('Error creating defaults:', err);
+        return res.status(500).json({ message: 'Error during creating defaults' });
     }
 }
 
@@ -60,8 +64,8 @@ app.get('/', (req, res) => {
 });
 
 //Routes
-app.use('/user', require('./src/routes/user.route'));
 app.use('/', require('./src/routes/main.route'));
+app.use('/user', require('./src/routes/user.route'));
 app.use('/audit', require('./src/routes/audit.route'));
 
 //For Errors

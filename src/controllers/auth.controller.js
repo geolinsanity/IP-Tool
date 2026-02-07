@@ -7,7 +7,8 @@ exports.hashPass = async (password) => {
         const hashPassword = await bcrypt.hash(password, salt);
         return hashPassword;
     } catch (err) {
-        console.error(err)
+        console.error('Error hashing password:', err);
+        throw new Error('Error hashing password: ' + err.message);
     }
 }
 
@@ -15,35 +16,32 @@ exports.checkPassword = async (password, hashedPassword) => {
     try {
         return await bcrypt.compare(password, hashedPassword);
     } catch (err) {
-        console.error(err)
+        console.error('Error checking password:', err);
+        throw new Error('Error checking password: ' + err.message);
     }
 }
 
 exports.checkToken = (req, res, next) => {
     try {
-        const header = req.headers.authorization;
-        if(header === undefined) {
-            return res.json('Login first')
+        const token = req.cookies.token;
+        if(!token) {
+            return res.status(401).json({ message: 'Login first' });
         }
-        if(!header || !header.startsWith('Bearer ')) {
-            return res.status(401).json('Forbidden')
-        }
-        const token = header.split(' ')[1];
+
         const verifyToken = jwt.verify(token, process.env.SECRET_KEY)
-        console.log(verifyToken)
         req.user = verifyToken;
         console.log(req.user)
         return next();
     } catch (err) {
-        console.error(err)
-        return res.status(401).json('Token is invalid or expired')
+        console.error('Error verifying token:', err);
+        return res.status(401).json({ message: 'Token is invalid or expired', error: err.message })
     }
 }
 
 exports.isUser = async (req, res, next) => {
     try {
         if(!req.user) {
-            return res.status(401).json('Forbidden')
+            return res.status(401).json({ message: 'Forbidden' })
         }
         const allowedRoles = [1,2,3];
         const userRole = req.user.userRole;
@@ -51,16 +49,17 @@ exports.isUser = async (req, res, next) => {
             return next();
         }
         
-        return res.status(403).json('You do not have permission for this')
+        return res.status(403).json({ message: 'You do not have permission for this' });
     } catch (err) {
-        console.error(err)
+        console.error('Error checking user permission:', err);
+        return res.status(500).json({ message: 'Error checking user permission', error: err.message });
     }
 }
 
 exports.isAdmin = async (req, res, next) => {
     try {
         if(!req.user) {
-            return res.status(401).json('Forbidden')
+            return res.status(401).json({ message: 'Forbidden' })
         }
         const allowedRoles = [2,3];
         const userRole = req.user.userRole;
@@ -68,8 +67,9 @@ exports.isAdmin = async (req, res, next) => {
             return next();
         }
         
-        return res.status(403).json('You do not have permission for this')
+        return res.status(403).json({ message: 'You do not have permission for this' });
     } catch (err) {
-        console.error(err)
+        console.error('Error checking admin permission:', err);
+        return res.status(500).json({ message: 'Error checking admin permission', error: err.message });
     }
 }

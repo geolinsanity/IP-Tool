@@ -17,7 +17,8 @@ exports.logAction = async (req, res) => {
             newRecord: auditData.newRecord
         })
     } catch (err) {
-        console.error(err) 
+        console.error('Error logging audit action:', err);
+        return res.status(500).json({ message: 'Error logging audit action', error: err.message });
     }
 }
 
@@ -54,11 +55,12 @@ exports.getAuditLogs = async(req, res) => {
                 }
             ])
         } else {
-            return res.status(400).json('Invalid type used')
+            return res.status(400).json({ message: 'Invalid type used' })
         }
 
         res.status(200).json(query);
     } catch (err) {
-        console.error(err)
+        console.error('Error retrieving audit logs:', err);
+        return res.status(500).json({ message: 'Error retrieving audit logs', error: err.message });
     }
 }
