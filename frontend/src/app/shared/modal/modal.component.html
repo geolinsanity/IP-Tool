@@ -1,0 +1,39 @@
+@if(!data.isConfirm) {
+    <div>
+        <h2 mat-dialog-title>{{ data.isEdit ? 'Edit Record' : 'Create Record' }}</h2>
+
+        <form #form="ngForm" (ngSubmit)="save()" novalidate>
+            @for(field of data.fields; track field.key) {
+                <mat-form-field appearance="outline" style="width:100%; margin-bottom:12px;">
+                    <mat-label>{{ field.label }}</mat-label>
+                    <input matInput
+                        [(ngModel)]="data.record[field.key]"
+                        [name]="field.key"
+                        [type]="field.type || 'text'"
+                        #fieldControl="ngModel">
+                    @if(fieldControl.invalid && fieldControl.touched) {
+                        <mat-error>
+                            Invalid {{ field.label }}
+                        </mat-error>
+                    }
+                </mat-form-field>
+            }
+
+            <div mat-dialog-actions style="justify-content: flex-end;">
+            <button mat-button type="button" (click)="cancel()">Cancel</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+                {{ data.isEdit ? 'Update' : 'Create' }}
+            </button>
+            </div>
+        </form>
+    </div>
+} @else {
+    <div>
+        <h2 mat-dialog-title>{{ data.title || 'Confirm' }}</h2>
+        <p>{{ data.message }}</p>
+        <div mat-dialog-actions style="justify-content:flex-end; gap:8px; margin-top:16px;">
+            <button mat-button (click)="cancel()">{{ data.cancelText || 'Cancel' }}</button>
+            <button mat-raised-button color="warn" (click)="save()">{{ data.confirmText || 'Delete' }}</button>
+        </div>
+    </div>
+}

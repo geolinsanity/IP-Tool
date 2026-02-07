@@ -1,0 +1,62 @@
+<mat-toolbar class="hea">
+  <button
+    mat-icon-button
+    class="example-icon"
+    aria-label="Example icon-button with menu icon"
+    (click)="sidenav.toggle()"
+  >
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Hello {{ user }}</span>
+  <span class="example-spacer"></span>
+  <button
+    mat-icon-button
+    class="example-icon"
+    aria-label="Example icon-button with share icon"
+    (click)="logout()"
+  >
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" opened class="example-sidenav">
+    <mat-list>
+      <a
+        mat-list-item
+        routerLink="home"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        title="Home"
+        aria-label="Home"
+      >
+        <mat-icon class="primary-button" matListItemIcon>home</mat-icon>
+        <span matListItemTitle>Home</span>
+      </a>
+      <a
+        mat-list-item
+        routerLink="/audit"
+        routerLinkActive="active"
+        title="Audit"
+        aria-label="Audit"
+      >
+        <mat-icon matListItemIcon>receipt_long</mat-icon>
+        <span matListItemTitle>Audit</span>
+      </a>
+      <a
+        mat-list-item
+        routerLink="/contact"
+        routerLinkActive="active"
+        title="Projects"
+        aria-label="Projects"
+      >
+        <mat-icon matListItemIcon>account_box</mat-icon>
+        <span color="primary" matListItemTitle>Contact</span>
+      </a>
+    </mat-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

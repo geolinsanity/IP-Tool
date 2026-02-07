@@ -1,0 +1,32 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.sidenav-container {
+  width: 100%;
+  height: calc(100vh - 60px);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.example-sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+.sidenav {
+  padding: 20px;
+  overflow-y: auto;
+  height: 100%;
+    display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10rem;
+  padding-left: 20px;
+  padding-right: 20px;
+  // background-color: rgba(99, 102, 241, 0.08);
+  border-radius: 0;
+  // box-shadow: 2px 0 10px -4px;
+}
