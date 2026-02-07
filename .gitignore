@@ -1,0 +1,29 @@
+
+# Dependencies
+node_modules/
+
+# Angular
+.angular/
+.angular/cache/
+dist/
+build/
+
+# Environment files
+.env
+
+# Logs
+logs/
+
+# IDE
+.vscode/
+!.vscode/extensions.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Misc
+tmp/
+.cache/
+

@@ -1,6 +1,0 @@
-# Project files
-.env
-node_modules/
-
-# IDE
-.vscode
