@@ -1,13 +1,22 @@
 const Main = require('../models/main.model');
 const { audit } = require('../controllers/audit.controller');
+const { version } = require('mongoose');
 
 exports.getIP = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
+        const { version } = req.query;
+        const filter = {};
 
-        const totalRecords = await Main.countDocuments();
+        if(version === 'ipv4') {
+            filter.ip = { $regex: /^\d{1,3}(\.\d{1,3}){3}$/ };
+        } else if (version === 'ipv6') {
+            filter.ip = { $regex: /^([0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}$/ };
+        }
+
+        const totalRecords = await Main.countDocuments(filter);
         const getIPs = await Main.find()
             .limit(limit)
             .skip(skip)
@@ -21,9 +30,7 @@ exports.getIP = async (req, res) => {
                 currentPage: page,
                 limit,
                 totalRecords,
-                totalPages,
-                hasNextPage: page < totalPages,
-                hasPrevPage: page > 1
+                totalPages
             }
         });
     } catch (err) {

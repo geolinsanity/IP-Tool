@@ -1,36 +1,42 @@
-<div class="main-status">
-	<button mat-raised-button color="primary" (click)="openCreateModal()">Add New Record</button>
-	<table mat-table [dataSource]="dataSource">
-		<ng-container matColumnDef="ip">
-			<th mat-header-cell *matHeaderCellDef>IP</th>
-			<td mat-cell *matCellDef="let element">{{element.ip}}</td>
-		</ng-container>
-		<ng-container matColumnDef="label">
-			<th mat-header-cell *matHeaderCellDef>LABEL</th>
-			<td mat-cell *matCellDef="let element">{{element.label}}</td>
-		</ng-container>
-		<ng-container matColumnDef="comment">
-			<th mat-header-cell *matHeaderCellDef>COMMENT</th>
-			<td mat-cell *matCellDef="let element">{{element.comment}}</td>
-		</ng-container>
-		<ng-container matColumnDef="actions">
-			<th mat-header-cell *matHeaderCellDef></th>
-			<td mat-cell *matCellDef="let element">
-				<button mat-icon-button (click)="openEditModal(element)">
-					<mat-icon>edit</mat-icon>
-				</button>
-				<button mat-icon-button (click)="openDeleteModal(element)">
-					<mat-icon>delete</mat-icon>
-				</button>
-			</td>
-		</ng-container>
-		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-		<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-	</table>
+<div class="main-wrapper">
+	<button mat-raised-button color="primary" class="add-button" (click)="openCreateModal()">Add New Record</button>
+	<div class="table-wrapper">
+		<table mat-table [dataSource]="dataSource">
+			<!-- <ng-container matColumnDef="#">
+				<th mat-header-cell *matHeaderCellDef>#</th>
+				<td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
+			</ng-container> -->
+			<ng-container matColumnDef="ip">
+				<th mat-header-cell *matHeaderCellDef>IP</th>
+				<td mat-cell *matCellDef="let element" class="ip">{{element.ip}}</td>
+			</ng-container>
+			<ng-container matColumnDef="label">
+				<th mat-header-cell *matHeaderCellDef>LABEL</th>
+				<td mat-cell *matCellDef="let element">{{element.label}}</td>
+			</ng-container>
+			<ng-container matColumnDef="comment">
+				<th mat-header-cell *matHeaderCellDef>COMMENT</th>
+				<td mat-cell *matCellDef="let element" class="comment">{{element.comment}}</td>
+			</ng-container>
+			<ng-container matColumnDef="actions">
+				<th mat-header-cell *matHeaderCellDef></th>
+				<td mat-cell *matCellDef="let element" class="action">
+					<button mat-icon-button (click)="openEditModal(element)">
+						<mat-icon>edit</mat-icon>
+					</button>
+					<button mat-icon-button (click)="openDeleteModal(element)">
+						<mat-icon>delete</mat-icon>
+					</button>
+				</td>
+			</ng-container>
+			<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+		</table>
+	</div>
 	<mat-paginator
     [length]="totalRecords"
     [pageSize]="pageSize"
-    [pageSizeOptions]="[5, 10, 25, 50]"
+    [pageSizeOptions]="[10, 20, 30]"
     showFirstLastButtons
     (page)="onPageChange($event)">
   </mat-paginator>

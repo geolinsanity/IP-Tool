@@ -1,17 +1,16 @@
-<mat-toolbar class="hea">
+<mat-toolbar>
   <button
     mat-icon-button
-    class="example-icon"
     aria-label="Example icon-button with menu icon"
     (click)="sidenav.toggle()"
   >
     <mat-icon>menu</mat-icon>
   </button>
   <span>Hello {{ user }}</span>
-  <span class="example-spacer"></span>
+  <span class="toolbar-spacer"></span>
   <button
     mat-icon-button
-    class="example-icon"
+
     aria-label="Example icon-button with share icon"
     (click)="logout()"
   >
@@ -20,7 +19,7 @@
 </mat-toolbar>
 
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav mode="side" opened class="example-sidenav">
+  <mat-sidenav #sidenav mode="side" opened class="sidenav">
     <mat-list>
       <a
         mat-list-item
@@ -30,7 +29,7 @@
         title="Home"
         aria-label="Home"
       >
-        <mat-icon class="primary-button" matListItemIcon>home</mat-icon>
+        <mat-icon matListItemIcon>home</mat-icon>
         <span matListItemTitle>Home</span>
       </a>
       <a
@@ -45,13 +44,13 @@
       </a>
       <a
         mat-list-item
-        routerLink="/contact"
+        routerLink="/dashboard"
         routerLinkActive="active"
         title="Projects"
         aria-label="Projects"
       >
         <mat-icon matListItemIcon>account_box</mat-icon>
-        <span color="primary" matListItemTitle>Contact</span>
+        <span color="primary" matListItemTitle>Dashboard</span>
       </a>
     </mat-list>
   </mat-sidenav>

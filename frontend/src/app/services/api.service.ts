@@ -37,6 +37,14 @@ export class ApiService {
     return this.post('/user/logout', {});
   }
 
+  refreshToken() {
+    return this.post('/auth/refresh', {});
+  }
+
+  checkTokenStatus() {
+    return this.get('/auth/token-status');
+  }
+
   getUser() {
     return this.get('user');
   }

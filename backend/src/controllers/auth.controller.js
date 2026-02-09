@@ -37,6 +37,34 @@ exports.checkToken = (req, res, next) => {
         return res.status(401).json({ message: 'Token is invalid or expired', error: err.message })
     }
 }
+exports.refreshToken = async (req, res) => {
+    try {
+        const payload = {
+            userID: req.user.userID,
+            username: req.user.username,
+            userRole: req.user.userRole,
+        };
+
+        const tokenExpiry = 60 * 60; // 1 hour
+        const newToken = jwt.sign(payload, process.env.SECRET_KEY, {
+            expiresIn: tokenExpiry
+        });
+
+        return res.cookie('token', newToken, {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: false,
+            path: '/',
+            maxAge: tokenExpiry * 1000
+        }).json({
+            success: true,
+            message: 'Token refreshed successfully'
+        });
+    } catch (err) {
+        console.error('Error during token refresh:', err);
+        return res.status(500).json({ message: 'Error refreshing token', error: err.message });
+    }
+}
 
 exports.isUser = async (req, res, next) => {
     try {

@@ -131,7 +131,7 @@ export class MainComponent implements OnInit {
           },
           error: (err) => {
             console.error('Delete failed', err)
-            this.snackbar.open(err.error.message)
+            this.snackbar.open(err.error.message, 'Close', {duration: 3000})
           }
         })
       }

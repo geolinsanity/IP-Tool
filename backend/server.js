@@ -66,6 +66,7 @@ app.get('/', (req, res) => {
 //Routes
 app.use('/', require('./src/routes/main.route'));
 app.use('/user', require('./src/routes/user.route'));
+app.use('/auth', require('./src/routes/auth.route'));
 app.use('/audit', require('./src/routes/audit.route'));
 
 //For Errors

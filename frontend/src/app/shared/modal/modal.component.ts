@@ -10,7 +10,7 @@ export interface ModalElements {
   label: string;
   type?: 'text' | 'number';
   required?: boolean;
-  pattern?: string;//Regex for validation
+  pattern?: string;
 }
 
 interface ModalData<data = any> {
@@ -18,7 +18,7 @@ interface ModalData<data = any> {
   isEdit: boolean;
   fields: ModalElements[];
   isConfirm: boolean;
-  message?: string;           // message for confirmation
+  message?: string;
   confirmText?: string;
   cancelText?: string;
   title?: string;
