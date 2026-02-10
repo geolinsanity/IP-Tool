@@ -17,7 +17,7 @@ exports.getIP = async (req, res) => {
         }
 
         const totalRecords = await Main.countDocuments(filter);
-        const getIPs = await Main.find()
+        const getIPs = await Main.find(filter)
             .limit(limit)
             .skip(skip)
             .sort({ createdAt: -1 });

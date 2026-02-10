@@ -3,6 +3,10 @@ const router = express();
 const Audit = require('../controllers/audit.controller');
 const { checkToken } = require('../controllers/auth.controller');
 
-router.get('/:type', checkToken, Audit.getAuditLogs);
+router.get('/get-logs', checkToken, Audit.getAuditLogs);
+
+router.get('/get/record-IDs', checkToken, Audit.getAuditRecordIDs);
+
+router.get('/get/users', checkToken, Audit.getAuditUsers);
 
 module.exports = router;

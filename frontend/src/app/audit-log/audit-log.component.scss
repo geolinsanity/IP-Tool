@@ -5,9 +5,14 @@
   padding: 16px;
   gap: 16px;
 
-  .add-button {
-    align-self: flex-start;
-    flex-shrink: 0;
+  .spacer {
+    height: 36px;
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
   }
 
   .table-wrapper {

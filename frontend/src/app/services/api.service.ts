@@ -1,16 +1,34 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+
+type AuditScope =
+  | 'session'
+  | 'user'
+  | 'ip'
+  | 'ip-lifetime';
+
+interface AuditIPRecord {
+  recordID: string;
+  ip: string;
+  label: string;
+}
+
+export interface UserModel {
+  userID: string;
+  userRole: 1 | 2 | 3;
+  username: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private base = environment.apiBase;
   constructor(private http: HttpClient) {}
 
-  get<T>(path: string): Observable<T> {
+  get<T>(path: string, params: HttpParams = new HttpParams()): Observable<T> {
     const url = `${this.base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
-    return this.http.get<T>(url, { withCredentials: true });
+    return this.http.get<T>(url, { params, withCredentials: true });
   }
 
   post<T>(path: string, body: any): Observable<T> {
@@ -45,13 +63,46 @@ export class ApiService {
     return this.get('/auth/token-status');
   }
 
-  getUser() {
+  getUser(): Observable<UserModel> {
     return this.get('user');
   }
 
   getAPIs(pageNumber: number, pageLimit: number) {
-    return this.get(`list?page=${pageNumber}&limit=${pageLimit}`);
+    let params = new HttpParams()
+      .set('page', pageNumber.toString())
+      .set('limit', pageLimit.toString());
+    return this.get(`list`, params);
   }
+
+  getLogs(pageNumber: number, pageLimit: number, scope?: AuditScope, recordID?: string, userID?: string) {
+    let params = new HttpParams()
+      .set('page', pageNumber.toString())
+      .set('limit', pageLimit.toString());
+
+      console.log(`scope:${scope}     recordID:${recordID}    userID:${userID}`)
+    if (scope) {
+      params = params.set('scope', scope);
+    }
+
+    if (recordID) {
+      params = params.set('recordID', recordID);
+    }
+
+    if(userID) {
+      params = params.set('userID', userID);
+    }
+
+    return this.get(`/audit/get-logs`, params);
+  }
+
+  getRecordIDs(): Observable<{ records: AuditIPRecord }> {
+    return this.get('/audit/get/record-IDs');
+  }
+
+  getAuditUsers() {
+    return this.get('/audit/get/users');
+  }
+
 
   //CRUD
   addIP(newRecord: { ip: string; label: string; comment: string}) {

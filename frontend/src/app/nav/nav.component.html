@@ -6,7 +6,7 @@
   >
     <mat-icon>menu</mat-icon>
   </button>
-  <span>Hello {{ user }}</span>
+  <span>Hello {{ user.username }}</span>
   <span class="toolbar-spacer"></span>
   <button
     mat-icon-button
@@ -42,16 +42,18 @@
         <mat-icon matListItemIcon>receipt_long</mat-icon>
         <span matListItemTitle>Audit</span>
       </a>
-      <a
-        mat-list-item
-        routerLink="/dashboard"
-        routerLinkActive="active"
-        title="Projects"
-        aria-label="Projects"
-      >
-        <mat-icon matListItemIcon>account_box</mat-icon>
-        <span color="primary" matListItemTitle>Dashboard</span>
-      </a>
+      @if(user.userRole === 2 || user.userRole === 3) {
+        <a
+          mat-list-item
+          routerLink="/dashboard"
+          routerLinkActive="active"
+          title="Projects"
+          aria-label="Projects"
+        >
+          <mat-icon matListItemIcon>account_box</mat-icon>
+          <span color="primary" matListItemTitle>Dashboard</span>
+        </a>
+      }
     </mat-list>
   </mat-sidenav>
 

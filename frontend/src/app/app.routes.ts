@@ -4,6 +4,7 @@ import { AuditDashboardComponent } from './audit-dashboard/audit-dashboard.compo
 import { LoginComponent } from './login/login.component';
 import { NavComponent } from './nav/nav.component';
 import { authGuard } from './auth/auth.guard';
+import { AuditLogComponent } from './audit-log/audit-log.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -14,7 +15,8 @@ export const routes: Routes = [
         canActivate: [authGuard],
         children: [
             { path: 'home', component: MainComponent },
-            { path: 'audit', component: AuditDashboardComponent }
+            { path: 'audit', component: AuditLogComponent },
+            { path: 'dashboard', component: AuditDashboardComponent },
         ]
     }
 ];

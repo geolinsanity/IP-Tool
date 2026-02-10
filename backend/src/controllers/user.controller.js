@@ -1,12 +1,12 @@
 const User = require('../models/user.model');
 const Auth = require('../controllers/auth.controller');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 exports.createUser = async (req, res) => {
     try {
         const { username, password } = req.body;
         const encryptPass = await Auth.hashPass(password);
-        console.log(encryptPass)
         await User.create({
             username,
             password: encryptPass,
@@ -33,10 +33,13 @@ exports.loginUser = async (req, res) => {
             return res.json({ message: 'Wrong password' })
         }
 
+        const sessionID = crypto.randomUUID();
+
         let payload = {
             userID: user._id,
             username: user.username,
             userRole: user.role_id,
+            sessionID
         }
 
         const tokenExpiry = 60 * 60;

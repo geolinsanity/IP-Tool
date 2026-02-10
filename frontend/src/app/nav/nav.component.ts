@@ -5,7 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule}  from '@angular/material/list';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
-import { ApiService } from '../services/api.service';
+import { ApiService, UserModel } from '../services/api.service';
 
 @Component({
   selector: 'app-nav',
@@ -15,14 +15,14 @@ import { ApiService } from '../services/api.service';
   styleUrl: './nav.component.scss'
 })
 export class NavComponent implements OnInit {
-  user: string = 'User';
+  user: UserModel = { userID: '', username: '', userRole: 1 };
 
   constructor(private api: ApiService, private router: Router) {}
 
   ngOnInit(): void {
     this.api.getUser().subscribe({
-      next: (res: any) => {
-        this.user = res.username;
+      next: (res: UserModel) => {
+        this.user = res;
       },
       error: (err) => {
         console.error('Unable to load user', err);

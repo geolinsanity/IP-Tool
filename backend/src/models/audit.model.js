@@ -14,6 +14,9 @@ const schema = mongoose.Schema({
     username: {
         ...common
     },
+    sessionID: {
+        ...common
+    },
     actionType: {
         ...common,
         enum: ['Created', 'Updated', 'Deleted']

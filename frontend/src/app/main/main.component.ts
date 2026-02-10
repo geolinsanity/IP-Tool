@@ -45,13 +45,6 @@ export class MainComponent implements OnInit {
         this.dataSource.data = res.data;
 
         this.totalRecords = res.pagination.totalRecords;
-        this.pageSize = res.pagination.limit;
-        this.currentPage = res.pagination.currentPage;
-        if (this.paginator) {
-          this.paginator.length = this.totalRecords;
-          this.paginator.pageIndex = this.currentPage - 1;
-        }
-        console.log(this.dataSource)
       },
       error: (err) => {
         console.error('Unable to get data', err);
@@ -84,6 +77,10 @@ export class MainComponent implements OnInit {
           next: (result: any) => {
             this.getRecords(this.currentPage, this.pageSize);
             this.snackbar.open(result.message, 'Close', { duration: 3000 });
+          },
+          error: (err) => {
+            console.error('Creation failed', err)
+            this.snackbar.open(err.error.message, 'Close', {duration: 3000})
           }
         })
       }
@@ -106,6 +103,7 @@ export class MainComponent implements OnInit {
           },
           error: (err) => {
             console.error('Update failed', err)
+            this.snackbar.open(err.error.message, 'Close', {duration: 3000})
           }
         });
       }
