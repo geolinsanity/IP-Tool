@@ -17,6 +17,7 @@ export const routes: Routes = [
             { path: 'main', component: MainComponent },
             { path: 'audit', component: AuditLogComponent },
             { path: 'dashboard', component: AuditDashboardComponent },
+            { path: 'user-manager', component: AuditLogComponent }
         ]
     }
 ];
