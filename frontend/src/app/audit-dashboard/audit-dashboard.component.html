@@ -1,1 +1,106 @@
-<p>audit-dashboard works!</p>
+<div class="dashboard-wrapper">
+    <div class="tile summary-tile">
+        <div class="summary-container">
+            <mat-card class="summary-card">
+                <mat-card-title>Total Actions</mat-card-title>
+                <mat-card-content>
+                    <h2>{{ totalActions }}</h2>
+                </mat-card-content>
+            </mat-card>
+            
+            <mat-card class="summary-card created">
+                <mat-card-title>Created</mat-card-title>
+                <mat-card-content>
+                    <h2>{{ createdActions }}</h2>
+                </mat-card-content>
+            </mat-card>
+            
+            <mat-card class="summary-card updated">
+                <mat-card-title>Updated</mat-card-title>
+                <mat-card-content>
+                    <h2>{{ updatedActions }}</h2>
+                </mat-card-content>
+            </mat-card>
+            
+            <mat-card class="summary-card deleted">
+                <mat-card-title>Deleted</mat-card-title>
+                <mat-card-content>
+                    <h2>{{ deletedActions }}</h2>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+    
+    <div class="tile sidebar">
+        <div class="sidebar-container">
+            <mat-card class="sidebar-card doughnut">
+                <mat-card-content>
+                <canvas class="canvas" baseChart
+                    [data]="doughnutData"
+                    [options]="doughnutOptions"
+                    [type]="doughnutType">
+                </canvas>
+                <div class="total-records-center">
+                    <h2>{{ totalRecords }}</h2>
+                    <span>Total</span>
+                </div>
+                </mat-card-content>
+            </mat-card>
+
+            <!-- <mat-card class="sidebar-card recent-actions">
+                <mat-card-title>Recent IPs</mat-card-title>
+                <mat-card-content>
+                    @for(log of auditLogs; track log) {
+                        <div class="action-row">
+                            <div class="action-type" [ngClass]="log.actionType.toLowerCase()">{{ log.actionType }}</div>
+                            <div class="action-desc">{{ log.actionDesc }}</div>
+                        </div>
+                    }
+                </mat-card-content>
+            </mat-card> -->
+
+            <mat-card class="sidebar-card recent-actions">
+                <mat-card-title>Recent Actions</mat-card-title>
+                <mat-card-content>
+                    @for(action of recentActions; track action) {
+                        <div class="action-row">
+                            <div class="action-type" [ngClass]="action.actionType.toLowerCase()">{{ action.actionType }}</div>
+                            <div class="">{{ action.username }}</div>
+                            <div class="action-desc">{{ action.actionDesc }}</div>
+                        </div>
+                    }
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+    
+    <div class="tile chart-tile">
+        <mat-card class="chart-card">
+            <div class="chart-container">
+                <canvas baseChart
+                    [data]="chartData"
+                    [options]="chartOptions"
+                    [type]="chartType">
+                </canvas>
+            </div>
+        </mat-card>
+    </div>
+</div>
+
+<!-- <div class="tile doughnut-tile">
+        <mat-card class="chart-card">
+            <div class="chart-container">
+                <canvas baseChart
+                    [data]="doughnutData"
+                    [options]="doughnutOptions"
+                    [type]="doughnutType">
+                </canvas>
+                <div class="total-records-center">
+                    <h2>{{ totalRecords }}</h2>
+                    <span>Total Records</span>
+                </div>
+            </div>
+        </mat-card>
+    </div> -->
+
+

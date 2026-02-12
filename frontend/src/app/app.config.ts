@@ -5,6 +5,7 @@ import { provideHttpClient, withXsrfConfiguration, HTTP_INTERCEPTORS, withInterc
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TokenRefreshInterceptor } from './services/token-refresh.interceptor';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +19,7 @@ export const appConfig: ApplicationConfig = {
       }),
       withInterceptorsFromDi()
     ),
-    { provide: HTTP_INTERCEPTORS, useClass: TokenRefreshInterceptor, multi: true }
+    provideCharts(withDefaultRegisterables()),
+    { provide: HTTP_INTERCEPTORS, useClass: TokenRefreshInterceptor, multi: true }, provideCharts(withDefaultRegisterables())
   ]
 };

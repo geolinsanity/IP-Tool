@@ -1,5 +1,4 @@
-const User = require('../models/user.model');
-const Auth = require('../controllers/auth.controller');
+const Main = require('../models/main.model');
 const Audit = require('../models/audit.model');
 
 exports.logAction = async (req, res) => {
@@ -7,7 +6,7 @@ exports.logAction = async (req, res) => {
         const { userID, username, sessionID } = req.user;
         const { auditAction, auditDesc, auditData } = req;
         console.log('AUDIT DATA',req.auditAction, req.auditData.data)
-        const newAudit = await Audit.create({
+        await Audit.create({
             userID,
             username,
             sessionID,
@@ -92,12 +91,6 @@ exports.getAuditLogs = async(req, res) => {
 
 exports.getAuditRecordIDs = async(req, res) => {
     try {
-        const { userRole } = req.user;
-
-        if(userRole !== 2 && userRole !== 3) {
-            return res.status(403).json({ message: 'Forbidden' });
-        }
-
         const records = await Audit.aggregate([
             { $match: { recordID: { $exists: true, $ne: null } } },
             { $addFields: { recordID: { $toObjectId: "$recordID" } } },//Convert string to objectID
@@ -138,8 +131,6 @@ exports.getAuditRecordIDs = async(req, res) => {
 
 exports.getAuditUsers = async(req, res) => {
     try {
-        const { userRole } = req.user;
-
         const users = await Audit.aggregate([
             // Distinct users in audit
             {
@@ -172,13 +163,161 @@ exports.getAuditUsers = async(req, res) => {
         ]);
 
         res.json({ users });
-
-        if(userRole !== 2 && userRole !== 3) {
-            return res.status(403).json({ message: 'Forbidden' });
-        }
-
     } catch (err) {
         console.error('Error retrieving users:', err);
         return res.status(500).json({ message: 'Error fetching users', error: err.message });
+    }
+}
+
+exports.getAllActionCount = async(req, res) => {
+    try {
+        const counts = await Audit.aggregate([
+            {
+                $group: {
+                    _id: '$actionType',
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalActions: { $sum: '$count' },
+                    counts: {
+                        $push: {
+                            k: '$_id',
+                            v: '$count'
+                        }
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    countsObj: { $arrayToObject: '$counts' }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    totalActions: 1,
+                    created: { $ifNull: ['$countsObj.Created', 0] },
+                    updated: { $ifNull: ['$countsObj.Updated', 0] },
+                    deleted: { $ifNull: ['$countsObj.Deleted', 0] }
+                }
+            }
+        ]);
+        res.json(counts[0]);
+    } catch (err) {
+        console.error('Error retrieving action counts:', err);
+        return res.status(500).json({ message: 'Error fetching action counts', error: err.message });
+    }
+}
+
+exports.getActionsOverTime = async(req, res) => {
+    try {
+        const now = new Date();
+        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+
+        const rawData = await Audit.aggregate([
+            {
+            $match: {
+                createdAt: { $gte: firstDayOfMonth, $lte: lastDayOfMonth }
+            }
+            },
+            {
+            $group: {
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                Created: { $sum: { $cond: [{ $eq: ["$actionType", "Created"] }, 1, 0] } },
+                Updated: { $sum: { $cond: [{ $eq: ["$actionType", "Updated"] }, 1, 0] } },
+                Deleted: { $sum: { $cond: [{ $eq: ["$actionType", "Deleted"] }, 1, 0] } },
+            }
+            },
+            { $sort: { "_id": 1 } }
+        ]);
+
+        const chartData = {
+            labels: rawData.map(d => d._id),
+            datasets: [
+                { label: 'Created', data: rawData.map(d => d.Created), backgroundColor: '#B3CC57' },
+                { label: 'Updated', data: rawData.map(d => d.Updated), backgroundColor: '#FEBD3B' },
+                { label: 'Deleted', data: rawData.map(d => d.Deleted), backgroundColor: '#EF746F' }
+            ]
+        };
+
+        console.log(chartData)
+        res.json(chartData);
+    } catch (err) {
+        console.error('Error retrieving action over time:', err);
+        return res.status(500).json({ message: 'Error fetching action over time', error: err.message });
+    }
+}
+
+exports.getIPCount = async(req, res) => {
+    try {
+        const ipCounts = await Main.aggregate([{
+            $group: {
+                _id: null,
+                ipv4: {
+                    $sum: {
+                        $cond: [
+                            {
+                                $regexMatch: {
+                                    input: "$ip",
+                                    regex: /^(\b25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}\b$/
+                                }
+                            },
+                            1,
+                            0
+                        ]
+                    }
+                },
+                ipv6: {
+                    $sum: {
+                        $cond: [
+                            {
+                                $regexMatch: {
+                                    input: "$ip",
+                                    regex: /^([0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}$/
+                                }
+                            },
+                            1,
+                            0
+                        ]
+                    }
+                }
+            }}
+        ]);
+
+        const ipv4 = ipCounts[0]?.ipv4 || 0;
+        const ipv6 = ipCounts[0]?.ipv6 || 0;
+        const totalRecords = ipv4 + ipv6;
+
+        const chartData = {
+            labels: ['IPv4', 'IPv6'],
+            datasets: [
+                { data: [ipv4, ipv6], backgroundColor: ['#495B85', '#5A9A9C'] }
+            ]
+        };
+
+        res.json({chartData, totalRecords});
+    } catch (err) {
+        console.error('Error retrieving ip counts:', err);
+        return res.status(500).json({ message: 'Error fetching ip counts', error: err.message });
+    }
+}
+
+exports.getRecentAction = async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 10;
+
+        const recentActions = await Audit.find({})
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .select('actionType actionDesc createdAt username -_id');
+
+        res.json(recentActions);
+    } catch (err) {
+        console.error('Error retrieving recent actions:', err);
+        return res.status(500).json({ message: 'Error fetching recent actions', error: err.message });
     }
 }

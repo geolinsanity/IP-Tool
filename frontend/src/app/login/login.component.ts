@@ -3,11 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, MatButton],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -30,13 +31,13 @@ export class LoginComponent {
 
     this.api.login({ username: this.username, password: this.password }).subscribe({
       next: (response: any) => {
-        console.log('Login successful:', response);
-        // Store token if provided
-        if (response.token) {
-          localStorage.setItem('authToken', response.token);
+        console.log('Login successful:', response.userRole);
+        if (response.userRole === 2 || response.userRole === 3) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          // Navigate to home
+          this.router.navigate(['/main']);
         }
-        // Navigate to home
-        this.router.navigate(['/home']);
       },
       error: (error) => {
         console.error('Login failed:', error);

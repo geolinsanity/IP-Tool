@@ -21,16 +21,28 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav mode="side" opened class="sidenav">
     <mat-list>
+      @if(user.userRole === 2 || user.userRole === 3) {
+        <a
+          mat-list-item
+          routerLink="/dashboard"
+          routerLinkActive="active"
+          title="Dashboard"
+          aria-label="Dashboard"
+        >
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span color="primary" matListItemTitle>Dashboard</span>
+        </a>
+      }
       <a
         mat-list-item
-        routerLink="home"
+        routerLink="main"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-        title="Home"
-        aria-label="Home"
+        title="Main"
+        aria-label="Main"
       >
-        <mat-icon matListItemIcon>home</mat-icon>
-        <span matListItemTitle>Home</span>
+        <mat-icon matListItemIcon>view_list</mat-icon>
+        <span matListItemTitle>Main</span>
       </a>
       <a
         mat-list-item
@@ -42,18 +54,6 @@
         <mat-icon matListItemIcon>receipt_long</mat-icon>
         <span matListItemTitle>Audit</span>
       </a>
-      @if(user.userRole === 2 || user.userRole === 3) {
-        <a
-          mat-list-item
-          routerLink="/dashboard"
-          routerLinkActive="active"
-          title="Projects"
-          aria-label="Projects"
-        >
-          <mat-icon matListItemIcon>account_box</mat-icon>
-          <span color="primary" matListItemTitle>Dashboard</span>
-        </a>
-      }
     </mat-list>
   </mat-sidenav>
 

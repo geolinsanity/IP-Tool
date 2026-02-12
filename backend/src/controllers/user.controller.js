@@ -26,11 +26,11 @@ exports.loginUser = async (req, res) => {
         console.log(username)
         const user = await User.findOne({ username: username });
         if(!user) {
-            return res.json({ message: 'User does not exist' })
+            return res.status(401).json({ message: 'User does not exist' })
         }
         const checkPassword = await Auth.checkPassword(password, user.password);
         if(!checkPassword) {
-            return res.json({ message: 'Wrong password' })
+            return res.status(401).json({ message: 'Wrong password' })
         }
 
         const sessionID = crypto.randomUUID();
@@ -54,6 +54,7 @@ exports.loginUser = async (req, res) => {
             path: '/',
             maxAge: tokenExpiry * 1000
         }).json({
+            userRole: payload.userRole,
             success: true,
             message: 'Login successful'
         });

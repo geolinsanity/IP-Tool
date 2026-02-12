@@ -59,7 +59,7 @@ export class MainComponent implements OnInit {
   }
 
   recordFields: ModalElements[] = [
-    { key: 'ip', label: 'IP', required: true, pattern: '^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$' },
+    { key: 'ip', label: 'IP', required: true, pattern: '^((25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)){3}|([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4})$' },
     { key: 'label', label: 'Label' },
     { key: 'comment', label: 'Comment' }
   ];

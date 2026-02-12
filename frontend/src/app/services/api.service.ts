@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ChartData } from 'chart.js';
 
 type AuditScope =
   | 'session'
@@ -19,6 +20,25 @@ export interface UserModel {
   userID: string;
   userRole: 1 | 2 | 3;
   username: string;
+}
+
+export interface AuditSummary {
+  totalActions: number;
+  created: number;
+  updated: number;
+  deleted: number;
+}
+
+export interface DoughnutResponse {
+  chartData: ChartData<'doughnut', number[], unknown>;
+  totalRecords: number;
+}
+
+export interface RecentActions {
+  username: string;
+  actionType: string,
+  actionDesc: string,
+  createdAt: string
 }
 
 @Injectable({ providedIn: 'root' })
@@ -101,6 +121,23 @@ export class ApiService {
 
   getAuditUsers() {
     return this.get('/audit/get/users');
+  }
+
+  // Dashboard
+  getActionCounts(): Observable<AuditSummary> {
+    return this.get('/audit/get-action-count');
+  }
+
+  getActionOverTime(): Observable<ChartData<'bar'>> {
+    return this.get('/audit/get-action-over-time');
+  }
+
+  getIPCounts(): Observable<DoughnutResponse> {
+    return this.get('/audit/get-ip-count');
+  }
+
+  getRecentAction(): Observable<RecentActions[]> {
+    return this.get('/audit/get-recent-actions');
   }
 
 

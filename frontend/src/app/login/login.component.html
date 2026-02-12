@@ -1,10 +1,6 @@
 <div class="login-container">
   <div class="login-form">
-    <h1>Login</h1>
-    
-    <div *ngIf="error" class="error-message">
-      {{ error }}
-    </div>
+    <h1>IP-Tool</h1>
 
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
       <div class="form-group">
@@ -33,7 +29,11 @@
         />
       </div>
 
-      <button type="submit" [disabled]="!loginForm.valid || loading">
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid || loading">
         {{ loading ? 'Logging in...' : 'Login' }}
       </button>
     </form>

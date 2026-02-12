@@ -7,14 +7,14 @@ import { authGuard } from './auth/auth.guard';
 import { AuditLogComponent } from './audit-log/audit-log.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full'},
+    { path: '', redirectTo: 'main', pathMatch: 'full'},
     { path: 'login', component: LoginComponent },
     {
         path: '',
         component: NavComponent,
         canActivate: [authGuard],
         children: [
-            { path: 'home', component: MainComponent },
+            { path: 'main', component: MainComponent },
             { path: 'audit', component: AuditLogComponent },
             { path: 'dashboard', component: AuditDashboardComponent },
         ]
