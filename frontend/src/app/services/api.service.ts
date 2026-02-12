@@ -75,6 +75,10 @@ export class ApiService {
     return this.post('/user/logout', {});
   }
 
+  register(credentials: { username: string, password: string }) {
+    return this.post('/user/signup', credentials)
+  }
+
   refreshToken() {
     return this.post('/auth/refresh', {});
   }

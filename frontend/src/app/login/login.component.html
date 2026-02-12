@@ -2,6 +2,21 @@
   <div class="login-form">
     <h1>IP-Tool</h1>
 
+    <div class="mode-toggle">
+      <button
+        type="button"
+        [class.active]="!isRegisterMode"
+        (click)="setMode(false)">
+        Login
+      </button>
+      <button
+        type="button"
+        [class.active]="isRegisterMode"
+        (click)="setMode(true)">
+        Register
+      </button>
+    </div>
+
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
       <div class="form-group">
         <label for="username">Username:</label>
@@ -29,12 +44,17 @@
         />
       </div>
 
-      <div *ngIf="error" class="error-message">
-        {{ error }}
-      </div>
+      @if(error) {
+        <div class="error-message">{{ error }}</div>
+      }
+      @if(regSuccess) {
+        <div class="success-message">{{ regSuccess }}</div>
+      }
 
       <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid || loading">
-        {{ loading ? 'Logging in...' : 'Login' }}
+        {{ loading
+            ? (isRegisterMode ? 'Registering...' : 'Logging in...')
+            : (isRegisterMode ? 'Register' : 'Login') }}
       </button>
     </form>
   </div>
