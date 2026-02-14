@@ -97,21 +97,10 @@ Install MongoDB
 
 	Frontend:
 	```
-	cd frontend
-	npm install
-	```
-
-	Backend:
-	```
-	cd backend
-	npm install
-	```
-3. Install NPM packages
-   ```sh
-   npm install
+   npm run install:all
    ```
 
-4. Create a .env at root of backend folder and add the details for you environment
+3. Create a .env at root of backend folder and add the details for you environment
    ```env
     DB_HOST = <DB_HOST>
     DB_PORT = <DB_PORT>
@@ -120,9 +109,9 @@ Install MongoDB
     SECRET_KEY = <SECRET_KEY>
    ```
 
-5. Run both Frontend and Backend
+4. Run both Frontend and Backend
    ```
-   npm start
+   npm run start:all
    ```
 
 
@@ -137,16 +126,6 @@ Install MongoDB
 ## Usage
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-   Execute code lint check
-   ```sh
-   npm run lint
-   ```
-   
-   Execute code lint check and fix
-   ```sh
-   npm run lint:fix
-   ```
 
    Command to copy static and asset files
    ```sh

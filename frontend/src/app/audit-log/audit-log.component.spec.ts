@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AuditLogComponent } from './audit-log.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('AuditLogComponent', () => {
   let component: AuditLogComponent;
@@ -8,7 +10,11 @@ describe('AuditLogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AuditLogComponent]
+      imports: [AuditLogComponent],
+      providers: [
+        provideHttpClient(),
+        provideNoopAnimations()
+      ]
     })
     .compileComponents();
 
